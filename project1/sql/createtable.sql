@@ -1,3 +1,6 @@
+create database moviedb;
+use moviedb;
+
 CREATE TABLE movies (
     id VARCHAR(10) PRIMARY KEY NOT NULL,
     title VARCHAR(100) DEFAULT '',
@@ -41,7 +44,7 @@ CREATE TABLE customers (
     password VARCHAR(20) DEFAULT '',
     FOREIGN KEY (ccId) REFERENCES creditcards(id) on DELETE CASCADE
 );
-CREATE TABLE salse (
+CREATE TABLE sales (
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
     customerId INT NOT NULL,
     FOREIGN KEY (customerId) REFERENCES customers(id) on DELETE CASCADE,
