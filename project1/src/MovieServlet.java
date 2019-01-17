@@ -40,9 +40,10 @@ public class MovieServlet extends HttpServlet {
             // Declare our statement
             Statement statement = dbcon.createStatement();
             
-            // Query database
+            // Query database to get top 20 movies list.
             String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT 20";
-
+            
+            
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
 
@@ -52,11 +53,18 @@ public class MovieServlet extends HttpServlet {
             while (rs.next()) {
             	String movie_id = rs.getString("id");
             	String movie_title = rs.getString("title");
+            	String movie_year = rs.getString("year");
+            	String movie_director = rs.getString("director");
             	String movie_rating = rs.getString("rating");
+            	
+            	//May have problems.
+//            	String query_stars = "SELECT * from movies as m, ratings as r, stars_in_movies as sim, stars as s where s.id = sim.starId and m.id = sim.movieId and r.movieId = m.id and m.id ="+movie_id;
             	
             	JsonObject jsonObject = new JsonObject();
             	jsonObject.addProperty("movie_id", movie_id);
             	jsonObject.addProperty("movie_title", movie_title);
+            	jsonObject.addProperty("movie_year", movie_year);
+            	jsonObject.addProperty("movie_director", movie_director);
             	jsonObject.addProperty("movie_rating", movie_rating);
             	
                 jsonArray.add(jsonObject);

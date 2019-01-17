@@ -35,6 +35,8 @@ function handleStarResult(resultData) {
             + resultData[i]["movie_title"] +     // display star_name for the link text
             '</a>' +
             "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
+        rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
         rowHTML += "</tr>";
 
