@@ -55,17 +55,26 @@ public class MovieServlet extends HttpServlet {
             	String movie_title = rs.getString("title");
             	String movie_year = rs.getString("year");
             	String movie_director = rs.getString("director");
-            	
+            	String genreList = "";
             	String movie_rating = rs.getString("rating");
             	
             	//May have problems.
 //            	String query_stars = "SELECT * from movies as m, ratings as r, stars_in_movies as sim, stars as s where s.id = sim.starId and m.id = sim.movieId and r.movieId = m.id and m.id ="+movie_id;
+            	
+            	
+            	String query_log= "SELECT GROUP_CONCAT(g.name) AS genreList FROM  `genres` g JOIN `genres_in_movies` gm ON gm.genreId = g.id AND gm.movieId ="+"'"+movie_id+"'";
+            	
+            	Statement statement_log = dbcon.createStatement();
+            	ResultSet rs_log = statement_log.executeQuery(query_log);
+            	rs_log.next();
+            	genreList=rs_log.getString("genreList");
             	
             	JsonObject jsonObject = new JsonObject();
             	jsonObject.addProperty("movie_id", movie_id);
             	jsonObject.addProperty("movie_title", movie_title);
             	jsonObject.addProperty("movie_year", movie_year);
             	jsonObject.addProperty("movie_director", movie_director);
+            	jsonObject.addProperty("genreList", genreList);
             	jsonObject.addProperty("movie_rating", movie_rating);
             	
                 jsonArray.add(jsonObject);
