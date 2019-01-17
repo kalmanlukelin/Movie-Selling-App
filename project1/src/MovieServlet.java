@@ -11,6 +11,7 @@ import javax.sql.DataSource;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -56,18 +57,37 @@ public class MovieServlet extends HttpServlet {
             	String movie_year = rs.getString("year");
             	String movie_director = rs.getString("director");
             	String genreList = "";
+            	String stars_name = "";
+            	String stars_id = "";
             	String movie_rating = rs.getString("rating");
             	
             	//May have problems.
 //            	String query_stars = "SELECT * from movies as m, ratings as r, stars_in_movies as sim, stars as s where s.id = sim.starId and m.id = sim.movieId and r.movieId = m.id and m.id ="+movie_id;
             	
-            	
-            	String query_log= "SELECT GROUP_CONCAT(g.name) AS genreList FROM  `genres` g JOIN `genres_in_movies` gm ON gm.genreId = g.id AND gm.movieId ="+"'"+movie_id+"'";
-            	
+            	//Query list of genres.
+            	String query_log = "SELECT GROUP_CONCAT(g.name) AS genreList FROM  `genres` g JOIN `genres_in_movies` gm ON gm.genreId = g.id AND gm.movieId ="+"'"+movie_id+"'";
             	Statement statement_log = dbcon.createStatement();
             	ResultSet rs_log = statement_log.executeQuery(query_log);
             	rs_log.next();
             	genreList=rs_log.getString("genreList");
+            	
+            	//Query list of stars.
+            	/*
+            	String query_los = "SELECT * from movies as m, ratings as r, stars_in_movies as sim, stars as s where s.id = sim.starId and m.id = sim.movieId and r.movieId = m.id and m.id = "+"'"+movie_id+"'";
+            	Statement statement_los = dbcon.createStatement();
+            	ResultSet rs_los = statement_los.executeQuery(query_los);
+            	rs_los.next();
+            	starList=rs_los.getString("genreList");*/
+            	
+            	String query_los = "SELECT * from movies as m, ratings as r, stars_in_movies as sim, stars as s where s.id = sim.starId and m.id = sim.movieId and r.movieId = m.id and m.id = "+"'"+movie_id+"'";
+//            	PreparedStatement statement_los = dbcon.prepareStatement(query_los);
+            	Statement statement_los = dbcon.createStatement();
+            	
+            	ResultSet rs_los = statement_los.executeQuery(query_los);
+            	while (rs_los.next()) {
+            		stars_name+=(rs_los.getString("name")+",");
+            		stars_id+=(rs_los.getString("starId")+",");
+            	}
             	
             	JsonObject jsonObject = new JsonObject();
             	jsonObject.addProperty("movie_id", movie_id);
@@ -75,6 +95,10 @@ public class MovieServlet extends HttpServlet {
             	jsonObject.addProperty("movie_year", movie_year);
             	jsonObject.addProperty("movie_director", movie_director);
             	jsonObject.addProperty("genreList", genreList);
+            	
+            	jsonObject.addProperty("stars_name", stars_name);
+            	jsonObject.addProperty("stars_id", stars_id);
+            	
             	jsonObject.addProperty("movie_rating", movie_rating);
             	
                 jsonArray.add(jsonObject);
