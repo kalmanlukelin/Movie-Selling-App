@@ -1,3 +1,5 @@
+
+
 /**
  * This example is following frontend and backend separation.
  *
@@ -13,6 +15,18 @@
  * Handles the data returned by the API, read the jsonObject and populate data into html elements
  * @param resultData jsonObject
  */
+$(document).ready(function() {
+    $('body').hide().fadeIn(1000);
+	$("a").click(function(e) {
+	    e.preventDefault();
+	    $link = $(this).attr("href");
+	    $("body").fadeOut(1000,function(){
+		    window.location =  $link; 
+		});
+    });
+});
+
+
 function handleStarResult(resultData) {
     console.log("handleStarResult: populating star table from resultData");
 
