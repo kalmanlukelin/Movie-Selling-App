@@ -55,6 +55,7 @@ public class MovieServlet extends HttpServlet {
             	String movie_title = rs.getString("title");
             	String movie_year = rs.getString("year");
             	String movie_director = rs.getString("director");
+            	
             	String movie_rating = rs.getString("rating");
             	
             	//May have problems.
