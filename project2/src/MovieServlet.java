@@ -23,6 +23,7 @@ public class MovieServlet extends HttpServlet {
     // Create a dataSource which registered in web.xml
     @Resource(name = "jdbc/moviedb")
     private DataSource dataSource;
+    private String movieSize = "";
 
     /**
      * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
@@ -33,6 +34,13 @@ public class MovieServlet extends HttpServlet {
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
+        
+        // parse request and count movie query offset
+        int page = Integer.parseInt(request.getParameter("p"));  
+        int numRecord_int = Integer.parseInt(request.getParameter("numRecord"));
+        
+        String offset = Integer.toString(page*numRecord_int);
+        String numRecord = Integer.toString(numRecord_int);
 
         try {
             // Get a connection from dataSource
@@ -41,13 +49,27 @@ public class MovieServlet extends HttpServlet {
             // Declare our statement
             Statement statement = dbcon.createStatement();
             
+        	// get number of movies
+    		String qSize = "SELECT COUNT(*) AS `cnt` FROM `movies` m JOIN `ratings` r ON m.id = r.movieId;";
+    		ResultSet rsP = statement.executeQuery(qSize);
+    		while (rsP.next()) {
+    			movieSize = rsP.getString("cnt");
+    		}
+    		System.out.println(movieSize);
+    		rsP.close();
+     
+        	JsonArray jsonArray = new JsonArray();
+        	
+        	JsonObject jsonObjSz = new JsonObject();
+        	jsonObjSz.addProperty("movieSize", movieSize);
+            jsonArray.add(jsonObjSz);
+        	
             // Query database to get top 20 movies list.
-            String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT 20";
-            
+            String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
 
-            JsonArray jsonArray = new JsonArray();
+            
 
             // Iterate through each row of rs
             while (rs.next()) {
@@ -86,13 +108,18 @@ public class MovieServlet extends HttpServlet {
             	jsonObject.addProperty("stars_id", stars_id);
             	jsonObject.addProperty("movie_rating", movie_rating);
                 jsonArray.add(jsonObject);
+                
+                rs_log.close();
+                rs_los.close();
             }
             
             // write JSON string to output
             out.write(jsonArray.toString());
             // set response status to 200 (OK)
             response.setStatus(200);
-
+            
+            
+            
             rs.close();
             statement.close();
             dbcon.close();

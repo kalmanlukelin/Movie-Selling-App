@@ -16,6 +16,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    
 
     <title>Movie List</title>
 </head>
@@ -27,8 +28,20 @@
   <p style="font-family:Impact;font-size:30px;">Top 20 Rating</p> 
 </div>
 
+<div id="movieperPageBtn" class="btn-group dropup">
+
+<!--   <button class="btn btn-secondary dropdown-toggle btn-sm" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    Movie per Page
+  </button>
+  <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+    <a class="dropdown-item" href="#">10</a>
+    <a class="dropdown-item" href="#">20</a>
+    <a class="dropdown-item" href="#">40</a>
+  </div> -->
+</div>
 
 
+<div>
 <!-- Id "star_table" is useful for jQuery to find the html element with id, class here is mapping to Bootstrap defined class CSS -->
 <table id="star_table" class="table table-striped">
     <!-- Create a table header -->
@@ -48,6 +61,17 @@
     <!-- Again, id "star_table_body" is useful for jQuery to find this html element -->
     <tbody id=movie_table_body></tbody>
 </table>
+</div>
+
+
+
+
+<nav aria-label="Page navigation example">
+      <div id=pagination_list> 
+      </div>
+</nav> 
+
+
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>

@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
          * In real world projects, you should talk to the database to verify username/password
          */ 
         
-        boolean passwordMatch = false;
+        int loginStatus = 2; // 0: correct, 1: username not match, 2: password not match
         
         try {
         	Connection dbcon = dataSource.getConnection();
@@ -52,24 +52,43 @@ public class LoginServlet extends HttpServlet {
             
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
-
             JsonArray jsonArray = new JsonArray();
-            while (rs.next()) {
-            	String _password = rs.getString("password");
-            	if(password.equals(_password)) {
-            		// getSession() : if exist, get the id, if not generate another one
-                    String sessionId = ((HttpServletRequest) request).getSession().getId(); 
-                    Long lastAccessTime = ((HttpServletRequest) request).getSession().getLastAccessedTime();
-                    request.getSession().setAttribute("user", new User(username));
+            
+            if(!rs.next()) {
+            	System.out.println("ResultSet in empty, wrong user name");
+            	loginStatus = 1;  
+            }
+            else {
+            	do {
+                	String _password = rs.getString("password");
+                	if(password.equals(_password)) {
+                		loginStatus = 0;
+                		// getSession() : if exist, get the id, if not generate another one
+                        String sessionId = ((HttpServletRequest) request).getSession().getId(); 
+                        Long lastAccessTime = ((HttpServletRequest) request).getSession().getLastAccessedTime();
+                        request.getSession().setAttribute("user", new User(username));
 
-                    JsonObject responseJsonObject = new JsonObject();
-                    responseJsonObject.addProperty("status", "success");
-                    responseJsonObject.addProperty("message", "success");
+                        JsonObject responseJsonObject = new JsonObject();
+                        responseJsonObject.addProperty("status", "success");
+                        responseJsonObject.addProperty("message", "success");
 
-                    response.getWriter().write(responseJsonObject.toString());
-            	}
+                        response.getWriter().write(responseJsonObject.toString());
+                	}
+            	}while (rs.next());
+            	
             }
             
+            if(loginStatus != 0) {
+        		System.out.println("Error");
+                JsonObject responseJsonObject = new JsonObject();
+                responseJsonObject.addProperty("status", "fail");
+                if (loginStatus == 1) {
+                    responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
+                } else if(loginStatus == 2) {
+                    responseJsonObject.addProperty("message", "incorrect password");
+                }
+                response.getWriter().write(responseJsonObject.toString());  	
+            }
             
             // write JSON string to output
             // set response status to 200 (OK)
@@ -80,14 +99,12 @@ public class LoginServlet extends HttpServlet {
             dbcon.close();
         } catch (Exception e) {
         	
-            JsonObject responseJsonObject = new JsonObject();
-            responseJsonObject.addProperty("status", "fail");
-            if (!username.equals("anteater")) {
-                responseJsonObject.addProperty("message", "user " + username + " doesn't exist");
-            } else {
-                responseJsonObject.addProperty("message", "incorrect password");
-            }
-            response.getWriter().write(responseJsonObject.toString());
+			// write error message JSON object to output
+			JsonObject jsonObject = new JsonObject();
+			jsonObject.addProperty("errorMessage", e.getMessage());
+			
+			// set reponse status to 500 (Internal Server Error)
+			response.setStatus(500);
 
         }
 

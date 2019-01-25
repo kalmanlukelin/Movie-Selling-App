@@ -27,20 +27,39 @@ $(document).ready(function() {
 });
 
 
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+
 function handleStarResult(resultData) {
     console.log("handleStarResult: populating star table from resultData");
 
+    let currentPage = parseInt(getParameterByName('p'));
+    let recordNum = parseInt(getParameterByName('numRecord'));
+    let moviePage = Math.ceil(parseInt(resultData[0]['movieSize'])/recordNum);
+    //console.log(moviePage);
+    
     // Populate the star table
-    // Find the empty table body by id "star_table_body"
     let starTableBodyElement = jQuery("#movie_table_body");
-
-    // Iterate through resultData, no more than 10 entries
-    for (let i = 0; i < Math.min(20, resultData.length); i++) {
+    for (let i = 1; i <= Math.min(recordNum, resultData.length-1); i++) {
 
         // Concatenate the html tags with resultData jsonObject
         let rowHTML = "";
         rowHTML += "<tr>";
-        let num=i+1;
+        let num=i;
         rowHTML += "<th>" + num + "</th>";
         rowHTML +=
             "<th>" +
@@ -73,17 +92,60 @@ function handleStarResult(resultData) {
         // Append the row created to the table body, which will refresh the page
         starTableBodyElement.append(rowHTML);
     }
+    
+    //pagination
+    let paginationElement = jQuery("#pagination_list");
+    let rowHTML = "<ul class='pagination justify-content-center'>";
+    if(currentPage-1 >= 0) rowHTML += "<li class='page-item'>";
+    else rowHTML += "<li class='page-item disabled'>";
+    rowHTML += "<a class='page-link' href='?p="+ (currentPage-1) + '&numRecord=' + recordNum +"'>" + 'Previous' + "</a></li>";
+    for (let i = currentPage-3; i <= currentPage+3; i++) {
+    	if(i < 0 || i >= moviePage) continue;
+    	if(i == currentPage) rowHTML += "<li class='page-item active'>";
+    	else rowHTML += "<li class='page-item'>";
+    	rowHTML += "<a class='page-link' href='?p="+ i + '&numRecord=' + recordNum +"'>" + (i+1) + "</a></li>";
+    }
+    if(currentPage+1 < moviePage) rowHTML += "<li class='page-item'>";
+    else rowHTML += "<li class='page-item disabled'>";
+    rowHTML += "<a class='page-link' href='?p="+ (currentPage+1) + '&numRecord=' + recordNum +"'>" + 'Next' + "</a></li>"+ "</ul>";
+    rowHTML += "</ul>";
+    paginationElement.append(rowHTML);
+    
+//    paginationElement.append("<ul class='pagination justify-content-center'>" + 
+//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage-1) + '&numRecord=' + recordNum +"'>" + 'Previous' + "</a></li>" + 
+//    		 
+//    		"<li class='page-item active'><a class='page-link' href='?p="+ currentPage + '&numRecord=' + recordNum +"'>" + (currentPage+1) + "</a></li>" +
+//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+1) + '&numRecord=' + recordNum +"'>" + (currentPage+2) + "</a></li>" + 
+//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+2) + '&numRecord=' + recordNum +"'>" + (currentPage+3) + "</a></li>" + 
+//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+3) + '&numRecord=' + recordNum +"'>" + (currentPage+4) + "</a></li>" + 
+//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+4) + '&numRecord=' + recordNum +"'>" + (currentPage+5) + "</a></li>" + 
+//   	     	"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+1) + '&numRecord=' + recordNum +"'>" + 'Next' + "</a></li>"+ "</ul>")
+
+    
+// "<li class='page-item disabled'><a class='page-link' href='#' tabindex='-1'>Previous</a></li>" +
+    
+    let movieperPageBtn = jQuery("#movieperPageBtn");
+    movieperPageBtn.append("<button class='btn btn-secondary dropdown-toggle btn-sm' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>"
+    		+ "Movie per Page" + "</button>"
+    		+ "<div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>"
+    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/10) + '&numRecord=' + 10 +"'>" + "10" + "</a>"
+    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/20) + '&numRecord=' + 20 +"'>" + "20" + "</a>"
+    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/40) + '&numRecord=' + 40 +"'>" + "40" + "</a>"+ "</div>");
+
 }
 
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser
  */
+let currentPage = parseInt(getParameterByName('p'));
+let recordNum = getParameterByName('numRecord');
+
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/movies", // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: "api/movies?p=" + currentPage + "&numRecord=" +recordNum, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleStarResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
