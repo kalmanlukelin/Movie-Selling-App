@@ -50,6 +50,7 @@ function handleStarResult(resultData) {
     let currentPage = parseInt(getParameterByName('p'));
     let recordNum = parseInt(getParameterByName('numRecord'));
     let moviePage = Math.ceil(parseInt(resultData[0]['movieSize'])/recordNum);
+    let genre=getParameterByName('genre');
     //console.log(moviePage);
     
     // Populate the star table
@@ -94,6 +95,7 @@ function handleStarResult(resultData) {
     }
     
     //pagination
+    /*
     let paginationElement = jQuery("#pagination_list");
     let rowHTML = "<ul class='pagination justify-content-center'>";
     if(currentPage-1 >= 0) rowHTML += "<li class='page-item'>";
@@ -108,6 +110,24 @@ function handleStarResult(resultData) {
     if(currentPage+1 < moviePage) rowHTML += "<li class='page-item'>";
     else rowHTML += "<li class='page-item disabled'>";
     rowHTML += "<a class='page-link' href='?p="+ (currentPage+1) + '&numRecord=' + recordNum +"'>" + 'Next' + "</a></li>"+ "</ul>";
+    rowHTML += "</ul>";*/
+    
+    //'<a href="index.html?p=0&numRecord=20&genre='+ resultData[i]["genre_name"] +'">'
+    
+    let paginationElement = jQuery("#pagination_list");
+    let rowHTML = "<ul class='pagination justify-content-center'>";
+    if(currentPage-1 >= 0) rowHTML += "<li class='page-item'>";
+    else rowHTML += "<li class='page-item disabled'>";
+    rowHTML += "<a class='page-link' href='?p="+ (currentPage-1) + '&numRecord=' + recordNum +'&genre='+genre+"'>" + 'Previous' + "</a></li>";
+    for (let i = currentPage-3; i <= currentPage+3; i++) {
+    	if(i < 0 || i >= moviePage) continue;
+    	if(i == currentPage) rowHTML += "<li class='page-item active'>";
+    	else rowHTML += "<li class='page-item'>";
+    	rowHTML += "<a class='page-link' href='?p="+ i + '&numRecord=' + recordNum +'&genre='+genre+"'>" + (i+1) + "</a></li>";
+    }
+    if(currentPage+1 < moviePage) rowHTML += "<li class='page-item'>";
+    else rowHTML += "<li class='page-item disabled'>";
+    rowHTML += "<a class='page-link' href='?p="+ (currentPage+1) + '&numRecord=' + recordNum +'&genre='+genre+"'>" + 'Next' + "</a></li>"+ "</ul>";
     rowHTML += "</ul>";
     paginationElement.append(rowHTML);
     
@@ -128,10 +148,9 @@ function handleStarResult(resultData) {
     movieperPageBtn.append("<button class='btn btn-secondary dropdown-toggle btn-sm' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>"
     		+ "Movie per Page" + "</button>"
     		+ "<div class='dropdown-menu' aria-labelledby='dropdownMenuButton'>"
-    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/10) + '&numRecord=' + 10 +"'>" + "10" + "</a>"
-    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/20) + '&numRecord=' + 20 +"'>" + "20" + "</a>"
-    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/40) + '&numRecord=' + 40 +"'>" + "40" + "</a>"+ "</div>");
-
+    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/10) + '&numRecord=' + 10 + '&genre='+genre + "'>" + "10" + "</a>"
+    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/20) + '&numRecord=' + 20 + '&genre='+genre + "'>" + "20" + "</a>"
+    		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/40) + '&numRecord=' + 40 + '&genre='+genre + "'>" + "40" + "</a>"+ "</div>");
 }
 
 
@@ -140,12 +159,22 @@ function handleStarResult(resultData) {
  */
 let currentPage = parseInt(getParameterByName('p'));
 let recordNum = getParameterByName('numRecord');
-
+let genre = getParameterByName('genre');
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
+
+/*
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
     url: "api/movies?p=" + currentPage + "&numRecord=" +recordNum, // Setting request url, which is mapped by StarsServlet in Stars.java
+    success: (resultData) => handleStarResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
+});*/
+
+
+jQuery.ajax({
+    dataType: "json", // Setting return data type
+    method: "GET", // Setting request method
+    url: "api/movies?p=" + currentPage + "&numRecord=" +recordNum+"&genre="+genre, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleStarResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });

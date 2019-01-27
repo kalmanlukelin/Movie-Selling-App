@@ -31,6 +31,9 @@ public class MovieServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 
         response.setContentType("application/json"); // Response mime type
+        
+        // Get genre from url.
+        String genre = request.getParameter("genre");
 
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
@@ -65,16 +68,25 @@ public class MovieServlet extends HttpServlet {
             jsonArray.add(jsonObjSz);
         	
             // Query database to get top 20 movies list.
-            String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;
+            // String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;                                                    
+            String query="";
+            if(genre.length() != 1) {
+            	query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
+            }
+            else {
+            	query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC";
+            }
+            
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
 
-            
-
             // Iterate through each row of rs
-            while (rs.next()) {
+            while (rs.next()) {         	
             	String movie_id = rs.getString("id");
             	String movie_title = rs.getString("title");
+            	//Skip the one that doesn't match the first character.
+            	if(genre.length() == 1 && movie_title.charAt(0) != genre.charAt(0)) continue;
+            	
             	String movie_year = rs.getString("year");
             	String movie_director = rs.getString("director");
             	String genreList = "";
@@ -87,6 +99,7 @@ public class MovieServlet extends HttpServlet {
             	Statement statement_log = dbcon.createStatement();
             	ResultSet rs_log = statement_log.executeQuery(query_log);
             	rs_log.next();
+   
             	genreList=rs_log.getString("genreList");
             	
             	//Query list of stars.    	
@@ -118,9 +131,7 @@ public class MovieServlet extends HttpServlet {
             // set response status to 200 (OK)
             response.setStatus(200);
             
-            
-            
-            rs.close();
+            //rs.close();
             statement.close();
             dbcon.close();
         } catch (Exception e) {

@@ -30,19 +30,18 @@ function handleStarResult(resultData) {
     
     rowHTML = "";
     for (let i=0; i<9; i++){
-//    	rowHTML+='<a href="index.html?title=' + i.toString() + '">'+ i + '</a>'+|;
-    	rowHTML+='<a href="index.html?title=' + i + '">'+i+'</a>'+'&nbsp | &nbsp';
+    	rowHTML+='<a href="index.html?p=0&numRecord=20&genre=' + i + '">'+i+'</a>'+'&nbsp | &nbsp';
     }
-    rowHTML+='<a href="index.html?title=' + 9 + '">'+9+'</a>'+'<br/>';
+    rowHTML+='<a href="index.html?p=0&numRecord=20&genre=' + 9 + '">'+9+'</a>'+'<br/>';
     
     for(let i = "A".charCodeAt(0); i <= "L".charCodeAt(0); i++) {
-    	rowHTML+='<a href="index.html?title=' + String.fromCharCode(i) + '">'+String.fromCharCode(i)+'</a>'+'&nbsp | &nbsp';
+    	rowHTML+='<a href="index.html?p=0&numRecord=20&genre=' + String.fromCharCode(i) + '">'+String.fromCharCode(i)+'</a>'+'&nbsp | &nbsp';
     }
-    rowHTML+='<a href="index.html?title=' + 'M'+ '">'+'M'+'</a>'+'<br/>';
+    rowHTML+='<a href="index.html?p=0&numRecord=20&genre=' + 'M'+ '">'+'M'+'</a>'+'<br/>';
     for(let i = "N".charCodeAt(0); i <= "Y".charCodeAt(0); i++) {
-    	rowHTML+='<a href="index.html?title=' + String.fromCharCode(i) + '">'+String.fromCharCode(i)+'</a>'+'&nbsp | &nbsp';
+    	rowHTML+='<a href="index.html?p=0&numRecord=20&genre=' + String.fromCharCode(i) + '">'+String.fromCharCode(i)+'</a>'+'&nbsp | &nbsp';
     }
-    rowHTML+='<a href="index.html?title=' + 'Z'+ '">'+'Z'+'</a>'+'<br/>';
+    rowHTML+='<a href="index.html?p=0&numRecord=20&genre=' + 'Z'+ '">'+'Z'+'</a>'+'<br/>';
     titlesElement.append(rowHTML);
 }
 
