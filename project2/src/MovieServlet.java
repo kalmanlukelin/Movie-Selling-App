@@ -62,7 +62,6 @@ public class MovieServlet extends HttpServlet {
     		rsP.close();
      
         	JsonArray jsonArray = new JsonArray();
-        	
         	JsonObject jsonObjSz = new JsonObject();
         	jsonObjSz.addProperty("movieSize", movieSize);
             jsonArray.add(jsonObjSz);
