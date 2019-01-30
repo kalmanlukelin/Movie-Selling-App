@@ -34,7 +34,15 @@ public class MovieServlet extends HttpServlet {
         
         // Get genre from url.
         String genre = request.getParameter("genre");
-
+        String Title = request.getParameter("Title");
+        String Year = request.getParameter("Year");
+        String Director = request.getParameter("Director");
+        String Star_name = request.getParameter("Star_name");
+        System.out.println(Title);
+        //System.out.println(Year);
+        
+        //System.out.println(genre);
+        //System.out.println(Title);
         // Output stream to STDOUT
         PrintWriter out = response.getWriter();
         
@@ -55,17 +63,39 @@ public class MovieServlet extends HttpServlet {
             // Query database to get top 20 movies list.
             // String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;                                                    
             String query="";
-            String qSize="";
+            String qSize="10";
             
-            if(genre.length() != 1) {
+            if(genre.length() > 1) {
             	query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
             	qSize="SELECT COUNT(*) AS `cnt` FROM (SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+") AS n";
             	// query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC";
             }
-            else {
+            else if(genre.length() == 1) {
             	// query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC";
             	query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId WHERE m.title like "+"'"+genre.charAt(0)+"%'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
             	qSize = "SELECT COUNT(*) AS `cnt` FROM (SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId WHERE m.title like "+"'"+genre.charAt(0)+"%'"+") AS n";
+            }
+            else {
+            	System.out.println(Title);
+            	//System.out.println(Year);
+            	String q="";
+                if(Title != "") {
+                	//"SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC"
+                	//query="SELECT * FROM movies as m WHERE m.title="+"'"+Title+"'"+ " ORDER BY r.rating DESC";
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.title="+"'"+Title+"'";
+                }
+                else if(Year != "") {
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.year="+"'"+Year+"'";
+                }
+                else if(Director != "") {
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.director="+"'"+Director+"'";
+                }
+                
+                else if(Star_name != "") {
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m INNER JOIN `ratings` r ON m.id=r.movieId INNER JOIN `stars_in_movies` sim ON sim.movieId=m.id INNER JOIN `stars` s ON s.id=sim.starId WHERE s.name="+"'"+Star_name+"'";;
+                }
+                query="SELECT * FROM "+"("+q+") AS n ORDER BY n.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
+                qSize="SELECT COUNT(*) AS `cnt` FROM "+"("+ q +") AS n";
             }
 
             // Count total number of movies.
@@ -93,6 +123,7 @@ public class MovieServlet extends HttpServlet {
         	// get number of movies
     		// String qSize = "SELECT COUNT(*) AS `cnt` FROM `movies` m JOIN `ratings` r ON m.id = r.movieId;";
     		//String qSize= "SELECT COUNT(*) AS `cnt` FROM "+"("+query+")"+"AS n";
+            
     		ResultSet rsP = statement.executeQuery(qSize);
     		while (rsP.next()) {
     			movieSize = rsP.getString("cnt");
