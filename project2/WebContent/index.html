@@ -17,16 +17,57 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
           integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
     
-
+    <!-- Some simple CSS-->
+    <style type="text/css">
+      header nav {
+        background: black;
+        color: white;
+        padding: 30px 10px;
+      }
+      .search_box {
+        font-size:100%;
+        position: relative;
+        top: 0px;
+        left: 0px;
+      }
+      .topdiv a {
+        COLOR: #C0C0C0;
+      }
+    </style>
+    
     <title>Movie List</title>
 </head>
+
 <body>
 
+<!-- search box-->
+<header>
+  <nav>
+    <div class="search_box" style="text-align:right;">
+      <form action="form_action.asp" method="get">
+        <input type="text" name="email" size="35" placeholder="Click here to search a movie"/>
+        <input type="submit" value="Search" />  
+      </form>
+      <div class="topdiv" style="color:#C0C0C0;">
+        <a href="main.html" >Home</a>
+        <span>|</span>
+        <a href="#about">Advanced Search</a>
+        <span>|</span>
+        <a href="#contact">Sign in</a>
+        <span>|</span>
+        <a href="#contact">My Cart</a>
+      </div>
+    </div> 
+  </nav>
+</header>
+
+<!--
 <div class="jumbotron text-center">
   <img src="https://tunesgo.wondershare.com/images/article/2017/07/top-movie-ringtones-in-2017.jpg" class="img-fluid">
   <h1 style="font-family:Impact;font-size:60px;">Movie list</h1>
   <p style="font-family:Impact;font-size:30px;">Top 20 Rating</p> 
 </div>
+-->
 
 <div id="movieperPageBtn" class="btn-group dropup">
 
