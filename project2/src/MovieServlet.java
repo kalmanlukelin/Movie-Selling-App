@@ -70,15 +70,19 @@ public class MovieServlet extends HttpServlet {
             // String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;                                                    
             String query="";
             if(genre.length() != 1) {
-            	query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
+            	// query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
+            	query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC";
             }
             else {
             	query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC";
+            	//query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
+            	
             }
             
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
-
+            
+            /*
             // Iterate through each row of rs
             while (rs.next()) {         	
             	String movie_id = rs.getString("id");
@@ -120,6 +124,59 @@ public class MovieServlet extends HttpServlet {
             	jsonObject.addProperty("stars_id", stars_id);
             	jsonObject.addProperty("movie_rating", movie_rating);
                 jsonArray.add(jsonObject);
+                
+                rs_log.close();
+                rs_los.close();
+            }*/
+            
+            int offset_=Integer.valueOf(offset);
+            int cnt_movies=0; // Count numbers of moives got.
+            // Iterate through each row of rs
+            while (rs.next() && cnt_movies != numRecord_int) {         	
+            	String movie_id = rs.getString("id");
+            	String movie_title = rs.getString("title");
+            	
+            	//Skip the one that doesn't match the first character.
+            	if(genre.length() == 1 && movie_title.charAt(0) != genre.charAt(0)) continue;
+            	
+            	String movie_year = rs.getString("year");
+            	String movie_director = rs.getString("director");
+            	String genreList = "";
+            	String stars_name = "";
+            	String stars_id = "";
+            	String movie_rating = rs.getString("rating");
+            	
+            	//Query list of genres.
+            	String query_log = "SELECT GROUP_CONCAT(g.name) AS genreList FROM  `genres` g JOIN `genres_in_movies` gm ON gm.genreId = g.id AND gm.movieId ="+"'"+movie_id+"'";
+            	Statement statement_log = dbcon.createStatement();
+            	ResultSet rs_log = statement_log.executeQuery(query_log);
+            	rs_log.next();
+   
+            	genreList=rs_log.getString("genreList");
+            	
+            	//Query list of stars.    	
+            	String query_los = "SELECT * from movies as m, ratings as r, stars_in_movies as sim, stars as s where s.id = sim.starId and m.id = sim.movieId and r.movieId = m.id and m.id = "+"'"+movie_id+"'";
+            	Statement statement_los = dbcon.createStatement();
+            	ResultSet rs_los = statement_los.executeQuery(query_los);
+            	while (rs_los.next()) {
+            		stars_name+=(rs_los.getString("name")+",");
+            		stars_id+=(rs_los.getString("starId")+",");
+            	}
+            	
+            	offset_--;
+            	if(offset_ < 0) {
+            	    JsonObject jsonObject = new JsonObject();
+            	    jsonObject.addProperty("movie_id", movie_id);
+            	    jsonObject.addProperty("movie_title", movie_title);
+            	    jsonObject.addProperty("movie_year", movie_year);
+            	    jsonObject.addProperty("movie_director", movie_director);
+            	    jsonObject.addProperty("genreList", genreList);
+            	    jsonObject.addProperty("stars_name", stars_name);
+            	    jsonObject.addProperty("stars_id", stars_id);
+            	    jsonObject.addProperty("movie_rating", movie_rating);
+                    jsonArray.add(jsonObject);
+                    cnt_movies++; 
+            	}
                 
                 rs_log.close();
                 rs_los.close();
