@@ -52,8 +52,47 @@ public class MovieServlet extends HttpServlet {
             // Declare our statement
             Statement statement = dbcon.createStatement();
             
+            // Query database to get top 20 movies list.
+            // String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;                                                    
+            String query="";
+            String qSize="";
+            
+            if(genre.length() != 1) {
+            	query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
+            	qSize="SELECT COUNT(*) AS `cnt` FROM (SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+") AS n";
+            	// query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC";
+            }
+            else {
+            	// query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC";
+            	query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId WHERE m.title like "+"'"+genre.charAt(0)+"%'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
+            	qSize = "SELECT COUNT(*) AS `cnt` FROM (SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId WHERE m.title like "+"'"+genre.charAt(0)+"%'"+") AS n";
+            }
+
+            // Count total number of movies.
+            /*
+            ResultSet rs_cnt = statement.executeQuery(query);
+            
+            int movieSize=0;
+            
+            while (rs_cnt.next()) {         
+            	String movie_title = rs_cnt.getString("title");
+            	
+            	//Skip the one that doesn't match the first character.
+            	if(genre.length() == 1 && movie_title.charAt(0) != genre.charAt(0)) continue;
+            	
+            	movieSize++;
+            }
+            rs_cnt.close();
+            
+            JsonArray jsonArray = new JsonArray();
+        	JsonObject jsonObjSz = new JsonObject();
+        	jsonObjSz.addProperty("movieSize", movieSize);
+        	jsonArray.add(jsonObjSz);*/
+        	
+            
         	// get number of movies
-    		String qSize = "SELECT COUNT(*) AS `cnt` FROM `movies` m JOIN `ratings` r ON m.id = r.movieId;";
+    		// String qSize = "SELECT COUNT(*) AS `cnt` FROM `movies` m JOIN `ratings` r ON m.id = r.movieId;";
+    		//String qSize= "SELECT COUNT(*) AS `cnt` FROM "+"("+query+")"+"AS n";
     		ResultSet rsP = statement.executeQuery(qSize);
     		while (rsP.next()) {
     			movieSize = rsP.getString("cnt");
@@ -65,31 +104,15 @@ public class MovieServlet extends HttpServlet {
         	JsonObject jsonObjSz = new JsonObject();
         	jsonObjSz.addProperty("movieSize", movieSize);
             jsonArray.add(jsonObjSz);
-        	
-            // Query database to get top 20 movies list.
-            // String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;                                                    
-            String query="";
-            if(genre.length() != 1) {
-            	// query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
-            	query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC";
-            }
-            else {
-            	query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC";
-            	//query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
-            	
-            }
             
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
             
-            /*
             // Iterate through each row of rs
             while (rs.next()) {         	
             	String movie_id = rs.getString("id");
             	String movie_title = rs.getString("title");
-            	//Skip the one that doesn't match the first character.
-            	if(genre.length() == 1 && movie_title.charAt(0) != genre.charAt(0)) continue;
-            	
+
             	String movie_year = rs.getString("year");
             	String movie_director = rs.getString("director");
             	String genreList = "";
@@ -127,8 +150,9 @@ public class MovieServlet extends HttpServlet {
                 
                 rs_log.close();
                 rs_los.close();
-            }*/
+            }
             
+            /*
             int offset_=Integer.valueOf(offset);
             int cnt_movies=0; // Count numbers of moives got.
             // Iterate through each row of rs
@@ -180,14 +204,14 @@ public class MovieServlet extends HttpServlet {
                 
                 rs_log.close();
                 rs_los.close();
-            }
+            }*/
             
             // write JSON string to output
             out.write(jsonArray.toString());
             // set response status to 200 (OK)
             response.setStatus(200);
             
-            //rs.close();
+            rs.close();
             statement.close();
             dbcon.close();
         } catch (Exception e) {
