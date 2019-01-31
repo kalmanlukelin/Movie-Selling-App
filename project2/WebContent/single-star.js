@@ -72,7 +72,7 @@ function handleResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-movie.html with id passed with GET url parameter
-            '<a href="single-movie.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&id=' + resultData[i]['movie_id'] + '">'
+            '<a href="single-movie.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&Title='+Title+'&Year='+Year+'&Director='+Director+'&Star_name='+Star_name+'&id=' + resultData[i]['movie_id'] + '">'
             + resultData[i]["movie_title"] +     // display movie_name for the link text
             '</a>' +
             "</th>";
@@ -87,7 +87,8 @@ function handleResult(resultData) {
     
     //Go back to movies list
     let go_back = jQuery("#go_back");
-    go_back.append('<a href="index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'">'+'Movie List'+'</a>');
+    //go_back.append('<a href="index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'">'+'Movie List'+'</a>');
+    go_back.append('<a href="index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&Title='+Title+'&Year='+Year+'&Director='+Director+'&Star_name='+Star_name+'">'+'Movie List'+'</a>');
 }
 
 /**
@@ -99,7 +100,10 @@ let starId = getParameterByName('id');
 let currentPage = parseInt(getParameterByName('p'));
 let recordNum = getParameterByName('numRecord');
 let genre = getParameterByName('genre');
-
+let Title = getParameterByName('Title');
+let Year = getParameterByName('Year');
+let Director = getParameterByName('Director');
+let Star_name = getParameterByName('Star_name');
 
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({

@@ -71,7 +71,7 @@ function handleStarResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-star.html with id passed with GET url parameter
-            '<a href="single-movie.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&id=' + resultData[i]['movie_id'] + '">'
+            '<a href="single-movie.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&id=' + resultData[i]['movie_id'] +'&Title='+Title+'&Year='+Year+'&Director='+Director+'&Star_name='+Star_name+ '">'
             + resultData[i]["movie_title"] +     // display star_name for the link text
             '</a>' +
             "</th>";
