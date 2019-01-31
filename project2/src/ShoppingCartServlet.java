@@ -41,29 +41,36 @@ public class ShoppingCartServlet extends HttpServlet {
      * handles GET requests to add and show the item list information
      */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    	int status = 0; // 0: not remove nor add, 1: add, 2: remove
     	String removeMovie = request.getParameter("removeMovie");
-    	boolean removeFunc = ((removeMovie == null) ? false : true);
-    	System.out.println(removeMovie);
-    	
-    	
         String item = request.getParameter("item");
         String qty = request.getParameter("qty");
+        if(removeMovie != null && item == null && qty == null) status = 2;
+        else if(removeMovie == null && item != null && qty != null) status = 1;
+        
+//    	boolean removeFunc = ((removeMovie == null) ? false : true); // remove movie or add movie
+    	System.out.println(removeMovie);
+    	System.out.println(status);
+  
         HttpSession session = request.getSession();
         
         HashMap<String, Integer> m = (HashMap<String, Integer>) session.getAttribute("itemMap");
-        if(m == null) {
-        	m= new HashMap<String, Integer>();
-        	if(!removeFunc) m.put(item, Integer.parseInt(qty));
-        	session.setAttribute("itemMap", m);
-        }else {
-            synchronized (m) {
-            	if(!removeFunc){
-                	int oldQty = m.containsKey(item) ? m.get(item) : 0;
-                	m.put(item, oldQty+ Integer.parseInt(qty));            		
-            	}
-            	else m.remove(removeMovie);
+        
+            if(m == null) {
+            	m= new HashMap<String, Integer>();
+            	if(status == 1) m.put(item, Integer.parseInt(qty));
+            	session.setAttribute("itemMap", m);
+            }else {
+            	if(status != 0) {
+                    synchronized (m) {
+                    	if(status == 1){
+                        	int oldQty = m.containsKey(item) ? m.get(item) : 0;
+                        	m.put(item, oldQty+ Integer.parseInt(qty));            		
+                    	}
+                    	else m.remove(removeMovie);
+                    } 	
+            	}       	
             }        	
-        }
 
         // join by array
         ArrayList<String> arr = new ArrayList();

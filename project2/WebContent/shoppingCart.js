@@ -25,8 +25,6 @@ function handleSessionData(resultDataString) {
     console.log("handle session response");
     console.log(resultDataJson);
     console.log(resultDataJson["sessionID"]);
-    let buyMovie = getParameterByName('movie');
-    $('#title').val(buyMovie);
     // show the session information 
     //$("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
 //    $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
@@ -39,18 +37,23 @@ function handleSessionData(resultDataString) {
 function handleCartArray(resultDataString) {
     const resultArray = resultDataString.split(",");
     //console.log(resultArray.length);
+    // append default movie at shopping cart
+    let buyMovie = getParameterByName('movie');
+    $('#title').val(buyMovie);
     
-    // change it to html list    
-    
+    // append shopping list table   
     let res = "<h2 class='text-center'>Shopping List</h2>"
     res += ("<table id='star_table' class='table table-striped'>");
-    res += ("<thead><tr><th>No.</th><th>Title</th><th>Qty</th></tr></thead><tbody>");
+    res += ("<thead><tr><th>No.</th><th>Title</th><th>Qty</th><th></th></tr></thead><tbody>");
     for(let i = 1; i < resultArray.length; i += 2){
     	let num = Math.floor(i/2)+1;
     	res += "<tr>";
     	res += "<td>" + num + "</td>";
     	res += "<td>" + resultArray[i-1] + "</td>"
     	res += "<td>" + resultArray[i] + "</td>" 
+    	var strM = resultArray[i-1];
+    	strM = strM.replace(' ', '_');
+    	res += "<td><button class='btn btn-outline-primary' onclick="+ "handleRemoval('" + strM + "')" + " type='button'>Remove</button></td>"
     	res += "</tr>";
     }
     res += "</tbody></table>";
@@ -82,8 +85,28 @@ function handleCartInfo(cartEvent) {
     );
 }
 
-function handleRemoval(purchaseEvent) {
-    console.log("Click Remove");
+//function handleRemovalOld(purchaseEvent) {
+//    console.log("Click Remove");
+//    /**
+//     * When users click the submit button, the browser will not direct
+//     * users to the url defined in HTML form. Instead, it will call this
+//     * event handler when the event is triggered.
+//     */
+//    //alert("Text: " + $("#cart tbody tr td:nth-child(1) input").attr("value"));
+//    //alert("Text: " + $("#cart tbody tr td:nth-child(1) input").val());
+//    purchaseEvent.preventDefault();
+//
+//    $.get(
+//        "api/shoppingCart",
+//        // Serialize the cart form to the data sent by POST request
+//        {removeMovie: $("#cart tbody tr td:nth-child(1) input").val()},
+//        (resultDataString) => handleCartArray(resultDataString)
+//    );
+//}
+
+function handleRemoval(movie) {
+	var strM = movie;
+	strM = strM.replace('_', ' ');
     /**
      * When users click the submit button, the browser will not direct
      * users to the url defined in HTML form. Instead, it will call this
@@ -91,23 +114,28 @@ function handleRemoval(purchaseEvent) {
      */
     //alert("Text: " + $("#cart tbody tr td:nth-child(1) input").attr("value"));
     //alert("Text: " + $("#cart tbody tr td:nth-child(1) input").val());
-    purchaseEvent.preventDefault();
 
     $.get(
-        "api/shoppingCart",
-        // Serialize the cart form to the data sent by POST request
-        {removeMovie: $("#cart tbody tr td:nth-child(1) input").val()},
-        (resultDataString) => handleCartArray(resultDataString)
+          "api/shoppingCart",
+          // Serialize the cart form to the data sent by POST request
+          {removeMovie: strM},
+          (resultDataString) => handleCartArray(resultDataString)
     );
 }
 
 
+//$.ajax({
+//    type: "POST",
+//    url: "api/shoppingCart",
+//    success: (resultDataString) => handleSessionData(resultDataString)
+//});
+
 $.ajax({
-    type: "POST",
+    method: "GET",
     url: "api/shoppingCart",
-    success: (resultDataString) => handleSessionData(resultDataString)
+    success: (resultDataString) => handleCartArray(resultDataString)
 });
 
 // Bind the submit action of the form to a event handler function
 $("#cart").submit((event) => handleCartInfo(event));
-$("#btnText").click((event) => handleRemoval(event));
+//$("#btnText").click((event) => handleRemovalOld(event));
