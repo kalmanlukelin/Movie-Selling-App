@@ -83,17 +83,21 @@ public class MovieServlet extends HttpServlet {
                 if(Title != "") {
                 	//"SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC"
                 	//query="SELECT * FROM movies as m WHERE m.title="+"'"+Title+"'"+ " ORDER BY r.rating DESC";
-                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.title="+"'"+Title+"'";
+                	//q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.title="+"'"+Title+"'";
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.title like "+"'%"+Title+"%'";
                 }
                 else if(Year != "") {
-                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.year="+"'"+Year+"'";
+                	//q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.year="+"'"+Year+"'";
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.year like "+"'%"+Year+"%'";
                 }
                 else if(Director != "") {
-                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.director="+"'"+Director+"'";
+                	//q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.director="+"'"+Director+"'";
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId AND m.director like "+"'%"+Director+"%'";
                 }
                 
                 else if(Star_name != "") {
-                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m INNER JOIN `ratings` r ON m.id=r.movieId INNER JOIN `stars_in_movies` sim ON sim.movieId=m.id INNER JOIN `stars` s ON s.id=sim.starId WHERE s.name="+"'"+Star_name+"'";;
+                	//q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m INNER JOIN `ratings` r ON m.id=r.movieId INNER JOIN `stars_in_movies` sim ON sim.movieId=m.id INNER JOIN `stars` s ON s.id=sim.starId WHERE s.name="+"'"+Star_name+"'";
+                	q="SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m INNER JOIN `ratings` r ON m.id=r.movieId INNER JOIN `stars_in_movies` sim ON sim.movieId=m.id INNER JOIN `stars` s ON s.id=sim.starId WHERE s.name like "+"'%"+Star_name+"%'";
                 }
                 query="SELECT * FROM "+"("+q+") AS n ORDER BY n.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
                 qSize="SELECT COUNT(*) AS `cnt` FROM "+"("+ q +") AS n";

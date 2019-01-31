@@ -77,7 +77,20 @@ function handleStarResult(resultData) {
             "</th>";
         rowHTML += "<th>" + resultData[i]["movie_year"] + "</th>";
         rowHTML += "<th>" + resultData[i]["movie_director"] + "</th>";
-        rowHTML += "<th>" + resultData[i]["genreList"] + "</th>";
+        //rowHTML += "<th>" + resultData[i]["genreList"] + "</th>";
+        
+        //For genres list
+        let genreList=resultData[i]["genreList"].split(",");
+        rowHTML += "<th>";
+        for(let j=0; j<genreList.length; j++){
+        	rowHTML+=('<a href="index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+ genreList[j] + '">'
+                    + genreList[j] +     // display movie_name for the link text
+                    '</a>'
+        	);
+        	rowHTML+= ",";
+        }
+        rowHTML = rowHTML.substring(0, rowHTML.length-1);
+        rowHTML += "</th>";
         
         //For stars list
         let stars_name = resultData[i]["stars_name"].split(",");
