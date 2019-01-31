@@ -62,7 +62,9 @@ function handleResult(resultData) {
     	"<li class='list-group-item'>Movie Year: " + resultData[0]["m_year"] + "</li>" +
     	"<li class='list-group-item'>Director: " + resultData[0]["m_director"] + "</li>" +
     	"<li class='list-group-item'>Genres: " + resultData[0]["genreList"] + "</li>" +
-    	"<li class='list-group-item'>Rating: " + resultData[0]["m_ratings"] + "</li>");
+    	"<li class='list-group-item'>Rating: " + resultData[0]["m_ratings"] + "</li>" +
+    	"<li class='list-group-item'><a class='btn btn-outline-primary' href='shoppingCart.html?movie=" + resultData[0]["m_title"] + "'" + "role='button'>Add Cart</a></li>");
+    
     
 
     console.log("handleResult: populating movie table from resultData");

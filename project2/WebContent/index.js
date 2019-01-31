@@ -107,6 +107,7 @@ function handleStarResult(resultData) {
         rowHTML += "</th>";
         
         rowHTML += "<th>" + resultData[i]["movie_rating"] + "</th>";
+        rowHTML += "<th><a class='btn btn-outline-primary' href='shoppingCart.html?movie=" + resultData[i]["movie_title"] + "'" + "role='button'>Add Cart</a></th>"
         rowHTML += "</tr>";
 
         // Append the row created to the table body, which will refresh the page
@@ -168,19 +169,6 @@ function handleStarResult(resultData) {
     rowHTML += "</ul>";
     paginationElement.append(rowHTML);
     
-//    paginationElement.append("<ul class='pagination justify-content-center'>" + 
-//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage-1) + '&numRecord=' + recordNum +"'>" + 'Previous' + "</a></li>" + 
-//    		 
-//    		"<li class='page-item active'><a class='page-link' href='?p="+ currentPage + '&numRecord=' + recordNum +"'>" + (currentPage+1) + "</a></li>" +
-//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+1) + '&numRecord=' + recordNum +"'>" + (currentPage+2) + "</a></li>" + 
-//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+2) + '&numRecord=' + recordNum +"'>" + (currentPage+3) + "</a></li>" + 
-//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+3) + '&numRecord=' + recordNum +"'>" + (currentPage+4) + "</a></li>" + 
-//    		"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+4) + '&numRecord=' + recordNum +"'>" + (currentPage+5) + "</a></li>" + 
-//   	     	"<li class='page-item'><a class='page-link' href='?p="+ (currentPage+1) + '&numRecord=' + recordNum +"'>" + 'Next' + "</a></li>"+ "</ul>")
-
-    
-// "<li class='page-item disabled'><a class='page-link' href='#' tabindex='-1'>Previous</a></li>" +
-    
 
     
     
@@ -205,6 +193,17 @@ function handleStarResult(resultData) {
     
 }
 
+
+function handleAddcart(addCardEvent){
+	addCardEvent.preventDefault();
+	console.log("hello");
+//    $.get(
+//        "api/shoppingCart",
+//        // Serialize the cart form to the data sent by POST request
+//        {removeMovie: $("#cart tbody tr td:nth-child(1) input").val()},
+//        (resultDataString) => handleCartArray(resultDataString)
+//    );
+}
 
 /**
  * Once this .js is loaded, following scripts will be executed by the browser

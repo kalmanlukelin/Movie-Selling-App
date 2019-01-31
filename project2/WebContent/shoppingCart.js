@@ -2,16 +2,34 @@
  * Handle the data returned by IndexServlet
  * @param resultDataString jsonObject, consists of session info
  */
+function getParameterByName(target) {
+    // Get request URL
+    let url = window.location.href;
+    // Encode target parameter name to url encoding
+    target = target.replace(/[\[\]]/g, "\\$&");
+
+    // Ues regular expression to find matched parameter value
+    let regex = new RegExp("[?&]" + target + "(=([^&#]*)|&|#|$)"),
+        results = regex.exec(url);
+    if (!results) return null;
+    if (!results[2]) return '';
+
+    // Return the decoded parameter value
+    return decodeURIComponent(results[2].replace(/\+/g, " "));
+}
+
+
 function handleSessionData(resultDataString) {
     resultDataJson = JSON.parse(resultDataString);
 
     console.log("handle session response");
     console.log(resultDataJson);
     console.log(resultDataJson["sessionID"]);
-
+    let buyMovie = getParameterByName('movie');
+    $('#title').val(buyMovie);
     // show the session information 
-    $("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
-    $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
+    //$("#sessionID").text("Session ID: " + resultDataJson["sessionID"]);
+//    $("#lastAccessTime").text("Last access time: " + resultDataJson["lastAccessTime"]);
 }
 
 /**
@@ -80,7 +98,6 @@ function handleRemoval(purchaseEvent) {
         (resultDataString) => handleCartArray(resultDataString)
     );
 }
-
 
 
 $.ajax({
