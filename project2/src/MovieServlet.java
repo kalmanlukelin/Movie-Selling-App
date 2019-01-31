@@ -38,7 +38,8 @@ public class MovieServlet extends HttpServlet {
         String Year = request.getParameter("Year");
         String Director = request.getParameter("Director");
         String Star_name = request.getParameter("Star_name");
-        System.out.println(Title);
+        String sort = request.getParameter("sort");
+        //System.out.println(Title);
         //System.out.println(Year);
         
         //System.out.println(genre);
@@ -96,6 +97,20 @@ public class MovieServlet extends HttpServlet {
                 }
                 query="SELECT * FROM "+"("+q+") AS n ORDER BY n.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
                 qSize="SELECT COUNT(*) AS `cnt` FROM "+"("+ q +") AS n";
+            }
+            System.out.println(sort==null);
+            System.out.println(sort);
+            if(sort.equals("title_up")) {
+            	query="SELECT * FROM "+"("+query+") AS n ORDER BY n.title DESC";
+            }
+            else if(sort.equals("title_down")) {
+            	query="SELECT * FROM "+"("+query+") AS n ORDER BY n.title ASC";
+            }
+            else if(sort.equals("rating_up")) {
+            	query="SELECT * FROM "+"("+query+") AS n ORDER BY n.rating DESC";
+            }
+            else if(sort.equals("rating_down")) {
+            	query="SELECT * FROM "+"("+query+") AS n ORDER BY n.rating ASC";
             }
 
             // Count total number of movies.

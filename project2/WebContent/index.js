@@ -43,6 +43,10 @@ function getParameterByName(target) {
     return decodeURIComponent(results[2].replace(/\+/g, " "));
 }
 
+function visitPage(type){
+	//window.location='index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&sort='+type;
+	window.location='index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&Title='+Title+'&Year='+Year+'&Director='+Director+'&Star_name='+Star_name+'&sort='+type;
+}
 
 function handleStarResult(resultData) {
     console.log("handleStarResult: populating star table from resultData");
@@ -52,6 +56,8 @@ function handleStarResult(resultData) {
     let moviePage = Math.ceil(parseInt(resultData[0]['movieSize'])/recordNum);
     let genre=getParameterByName('genre');
     //console.log(moviePage);
+    
+
     
     // Populate the star table
     let starTableBodyElement = jQuery("#movie_table_body");
@@ -162,6 +168,9 @@ function handleStarResult(resultData) {
     
 // "<li class='page-item disabled'><a class='page-link' href='#' tabindex='-1'>Previous</a></li>" +
     
+
+    
+    
     let movieperPageBtn = jQuery("#movieperPageBtn");
     movieperPageBtn.append("<button class='btn btn-secondary dropdown-toggle btn-sm' type='button' id='dropdownMenuButton' data-toggle='dropdown' aria-haspopup='true' aria-expanded='false'>"
     		+ "Movie per Page" + "</button>"
@@ -169,6 +178,18 @@ function handleStarResult(resultData) {
     		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/10) + '&numRecord=' + 10 + '&genre='+genre + "&Title="+Title+"&Year="+Year+"&Director="+Director+"&Star_name="+Star_name+ "'>" + "10" + "</a>"
     		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/20) + '&numRecord=' + 20 + '&genre='+genre + "&Title="+Title+"&Year="+Year+"&Director="+Director+"&Star_name="+Star_name+ "'>" + "20" + "</a>"
     		+ "<a class='dropdown-item' href='?p="+ currentPage * Math.floor(recordNum/40) + '&numRecord=' + 40 + '&genre='+genre + "&Title="+Title+"&Year="+Year+"&Director="+Director+"&Star_name="+Star_name+ "'>" + "40" + "</a>"+ "</div>");
+    
+    
+    let sort_button = jQuery("#sort_button");
+    //sort_button.append("<button onclick='location.href='http://www.example.com'' type='button'> test &#9650 </button>")
+    
+    movieperPageBtn.append(
+    		 "<button onclick="+"visitPage('title_up')"+" type='button'> Title &#9650 </button>"
+    		+"<button onclick="+"visitPage('title_down')"+" type='button'> Title &#9660 </button>"
+            +"<button onclick="+"visitPage('rating_up')"+" type='button'> Rating &#9650 </button>"
+            +"<button onclick="+"visitPage('rating_down')"+" type='button'> Rating &#9660 </button>"		
+    );
+    
 }
 
 
@@ -182,6 +203,7 @@ let Title = getParameterByName('Title');
 let Year = getParameterByName('Year');
 let Director = getParameterByName('Director');
 let Star_name = getParameterByName('Star_name');
+let Sprt_type = getParameterByName('sort');
 
 // Makes the HTTP GET request and registers on success callback function handleStarResult
 
@@ -204,6 +226,6 @@ jQuery.ajax({
 jQuery.ajax({
     dataType: "json", // Setting return data type
     method: "GET", // Setting request method
-    url: "api/movies?p=" + currentPage + "&numRecord=" +recordNum+"&genre="+genre+"&Title="+Title+"&Year="+Year+"&Director="+Director+"&Star_name="+Star_name, // Setting request url, which is mapped by StarsServlet in Stars.java
+    url: "api/movies?p=" + currentPage + "&numRecord=" +recordNum+"&genre="+genre+"&Title="+Title+"&Year="+Year+"&Director="+Director+"&Star_name="+Star_name+"&sort="+Sprt_type, // Setting request url, which is mapped by StarsServlet in Stars.java
     success: (resultData) => handleStarResult(resultData) // Setting callback function to handle data returned successfully by the StarsServlet
 });
