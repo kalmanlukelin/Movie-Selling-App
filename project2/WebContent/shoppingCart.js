@@ -41,7 +41,9 @@ function handleCartArray(resultDataString) {
     //console.log(resultArray.length);
     
     // change it to html list    
-    let res = "<table id='star_table' class='table table-striped'>";
+    
+    let res = "<h2 class='text-center'>Shopping List</h2>"
+    res += ("<table id='star_table' class='table table-striped'>");
     res += ("<thead><tr><th>No.</th><th>Title</th><th>Qty</th></tr></thead><tbody>");
     for(let i = 1; i < resultArray.length; i += 2){
     	let num = Math.floor(i/2)+1;

@@ -65,14 +65,11 @@
     
     <!-- Single movie page-->
     <div class="movies_list_page">
-        <h1>Movies List Page</h1>
+        <h1>Shopping Cart</h1>
     </div> 
   </nav>
 </header>
-
-<form action="checkOut.html">
-    <input type="submit" value="Go to Checkout" />
-</form>
+	
 
 <form ACTION="#" id="cart" METHOD="get">
     <br>
@@ -90,8 +87,8 @@
 			 <tr>
 			   <td><input id=title type="text" required="required" value="God Father" name="item"></td>
 			   <td><input type="number" min="0" required="required" name="qty"></td>
-			   <td><button type="submit">Add Quantity</button></td>
-			   <td><button type="reset" id="btnText">Remove</button></td>
+			   <td><button type="submit" class="btn btn-outline-primary">Add Quantity</button></td>
+			   <td><button type="reset" class="btn btn-outline-primary" id="btnText">Remove</button></td>
 			 </tr>
 		
 		    </tbody>
@@ -100,8 +97,19 @@
     <!-- <input type="submit" VALUE="add"> -->
 </form>
 
-<div id="item_list"></div>
+<br></br>
 
+
+<div id="item_list"></div>
+<br></br>
+
+<div class="container">
+	<div class="row justify-content-center align-items-center">
+		<form action="checkOut.html">
+		    <input type="submit" class="btn btn-outline-primary btn-lg" value="Go to Checkout" />
+		</form>
+	</div>
+</div>
 
 
 <!-- <form method="get" action="/">
