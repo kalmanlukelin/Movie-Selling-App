@@ -79,7 +79,7 @@ function handleResult(resultData) {
         rowHTML +=
             "<th>" +
             // Add a link to single-movie.html with id passed with GET url parameter
-            '<a href="single-star.html?id=' + resultData[i]['starId'] + '">'
+            '<a href="single-star.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'&id=' + resultData[i]['starId'] + '">'
             + resultData[i]["starName"] +     // display movie_name for the link text
             '</a>' +
             "</th>";
@@ -88,6 +88,11 @@ function handleResult(resultData) {
         // Append the row created to the table body, which will refresh the page
         movieTableBodyElement.append(rowHTML);
     }
+    
+    //Go back to movies list
+    let go_back = jQuery("#go_back");
+    go_back.append('<a href="index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'">'+'Movie List'+'</a>');
+    //go_back.append('href="index.html?p='+currentPage+'&numRecord='+recordNum+'&genre='+genre+'"');
 }
 
 /**
@@ -96,6 +101,10 @@ function handleResult(resultData) {
 
 // Get id from URL
 let movieId = getParameterByName('id');
+let currentPage = parseInt(getParameterByName('p'));
+let recordNum = getParameterByName('numRecord');
+let genre = getParameterByName('genre');
+
 
 // Makes the HTTP GET request and registers on success callback function handleResult
 jQuery.ajax({
