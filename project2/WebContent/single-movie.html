@@ -19,6 +19,26 @@
     
     <!-- Some simple CSS-->
     <style type="text/css">
+		.bg {
+		  /* The image used */
+		  background-image: url("https://stmed.net/sites/default/files/the-dark-knight-rises-wallpapers-29997-5887042.jpg");
+		
+		  /* Full height */
+		  height: 100%;
+		
+		  /* Center and scale the image nicely */
+		  background-position: center;
+		  background-repeat: no-repeat;
+		  background-size: cover;
+		}
+      .sub_bg {
+		  /* The image used */
+		  background-color: rgba(211,211,211, 0.3);
+		
+		  /* Full height */
+		  height: 100%;
+		  width: 85%;
+	  }
       header nav {
         background: black;
         color: white;
@@ -68,22 +88,26 @@
     <!-- Single movie page-->
     <div class="single_movie_page">
         <h1>Single Movie Page</h1>
-        <button data-toggle="collapse" data-target="#demo">Movie Info</button>
+<!--         <button data-toggle="collapse" data-target="#demo">Movie Info</button>
         <div id="demo" class="collapse">
             <ul id="movie_info" class="list-group"></ul> 
-        </div>
+        </div> -->
     </div>
   </nav>
 </header>
+<div class="container-fluid bg">
+    <div id=info_m class="container-fluid sub_bg">
+  </div>
+</div>
 
-<table id=movie_table class="table table-striped">
+<!-- <table id=movie_table class="table table-striped">
   <thead>
     <tr>
       <th>Stars</th>
     </tr>
   </thead>
   <tbody id=movie_table_body></tbody>
-</table>
+</table> -->
 
 <!-- Load jQuery and Bootstrap JS -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
