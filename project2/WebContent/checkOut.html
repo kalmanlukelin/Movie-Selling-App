@@ -24,7 +24,53 @@ body, html {
   background-repeat: no-repeat;
   background-size: cover;
 }
+header nav {
+  background: black;
+  color: white;
+  padding: 30px 10px;
+}
+.search_box {
+  font-size:100%;
+  position: relative;
+  top: 0px;
+  left: 0px;
+}
+.topdiv a {
+  COLOR: #C0C0C0;
+}
+.search_table {
+  position: relative;
+  top: 100px;
+  left: 600px;
+}
+.s_button {
+  position: relative;
+  top: 20px;
+  left: 180px;
+}
 </style>
+
+<!-- search box-->
+<header>
+  <nav>
+    <div class="search_box" style="text-align:right;">
+      <form action="form_action.asp" method="get">
+        <input type="text" name="email" size="35" placeholder="Click here to search a movie by title"/>
+        <input type="submit" value="Search" />  
+      </form>
+      <div class="topdiv" style="color:#C0C0C0;">
+        <a href="main.html" >Home</a>
+        <span>|</span>
+        <a href="#about">Advanced Search</a>
+        <span>|</span>
+        <a href="#contact">Sign in</a>
+        <span>|</span>
+        <a href="#contact">My Cart</a>
+      </div>
+    </div> 
+  </nav>
+</header>
+
 <body>
 <div class="bg">
     <div class="container">
@@ -43,10 +89,6 @@ body, html {
 						    <label for="exampleInputFirstName">First Name</label>
 						    <input type="text" required="required" class="form-control" id="firstname" aria-describedby="FirstNameHelp" placeholder="Enter First Name" name="fn">
 						    <small id="FirstNameHelp" class="form-text text-muted">First character must be capital one.</small>
-						  </div>
-						  <div class="form-group">
-						    <label for="exampleInputEmail1">Email address</label>
-						    <input type="email" required="required" class="form-control" id="email" placeholder="Enter email" name="email">
 						  </div>
 						  <div class="form-group">
 						    <label for="exampleInputCCID">Card Number</label>

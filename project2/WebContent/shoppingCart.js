@@ -52,7 +52,8 @@ function handleCartArray(resultDataString) {
     	res += "<td>" + resultArray[i-1] + "</td>"
     	res += "<td>" + resultArray[i] + "</td>" 
     	var strM = resultArray[i-1];
-    	strM = strM.replace(' ', '_');
+    	strM = strM.replace(/ /g, '_'); // g: global search
+    	console.log(strM);
     	res += "<td><button class='btn btn-outline-primary' onclick="+ "handleRemoval('" + strM + "')" + " type='button'>Remove</button></td>"
     	res += "</tr>";
     }
@@ -106,7 +107,8 @@ function handleCartInfo(cartEvent) {
 
 function handleRemoval(movie) {
 	var strM = movie;
-	strM = strM.replace('_', ' ');
+	strM = strM.replace(/_/g, ' ');
+	console.log(strM);
     /**
      * When users click the submit button, the browser will not direct
      * users to the url defined in HTML form. Instead, it will call this

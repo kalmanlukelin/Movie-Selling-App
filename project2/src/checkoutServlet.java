@@ -40,12 +40,10 @@ public class checkoutServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     	String lastName = request.getParameter("ln");
         String firstName = request.getParameter("fn");
-        String email = request.getParameter("email");
         String ccid = request.getParameter("ccid");
         String expiration = request.getParameter("date");
     	System.out.println(lastName);
     	System.out.println(firstName);
-    	System.out.println(email);
     	System.out.println(ccid);
     	System.out.println(expiration);
     	
@@ -56,7 +54,7 @@ public class checkoutServlet extends HttpServlet {
         HashMap<String, Integer> m = (HashMap<String, Integer>) session.getAttribute("itemMap");
         
         
-        int transacionStatus = 0; // 0: correct, 1: username not match, 2: email not match, 3: card info not match
+        int transacionStatus = 0; // 0: correct, 1: username not match, 3: card info not match
         
         try {
         	Connection dbcon = dataSource.getConnection();
@@ -64,7 +62,7 @@ public class checkoutServlet extends HttpServlet {
             Statement statement = dbcon.createStatement();
             
             // Query database to get top 20 movies list.
-            String query = "SELECT * FROM (SELECT c.firstName, c.lastName, c.ccId, c.email, cc.expiration FROM `customers` c JOIN `creditcards` cc ON c.ccId = cc.id) As s WHERE s.firstName ='" + firstName + "' AND s.lastName = '" + lastName + "'";
+            String query = "SELECT * FROM (SELECT c.firstName, c.lastName, c.ccId,  cc.expiration FROM `customers` c JOIN `creditcards` cc ON c.ccId = cc.id) As s WHERE s.firstName ='" + firstName + "' AND s.lastName = '" + lastName + "'";
             
             // Perform the query
             ResultSet rs = statement.executeQuery(query);
@@ -76,14 +74,9 @@ public class checkoutServlet extends HttpServlet {
             }
             else {
             	do {
-                	String _email = rs.getString("email");
                 	String _ccid = rs.getString("ccId");
                 	String _expiration = rs.getString("expiration");
-                	if(!email.contentEquals(_email)) {
-                		transacionStatus = 2;
-                		break;
-                	}
-                	else if(!ccid.equals(_ccid) || !expiration.equals(_expiration)) {
+                	if(!ccid.equals(_ccid) || !expiration.equals(_expiration)) {
                 		transacionStatus = 3;
                 		break;
                 	}
@@ -110,11 +103,9 @@ public class checkoutServlet extends HttpServlet {
                 JsonObject responseJsonObject = new JsonObject();
                 responseJsonObject.addProperty("status", "fail");
                 if (transacionStatus == 1) {
-                    responseJsonObject.addProperty("message", "user " + firstName + " " + lastName + " doesn't exist");
-                } else if(transacionStatus == 2) {
-                    responseJsonObject.addProperty("message", "incorrect email");
+                    responseJsonObject.addProperty("message", "User " + firstName + " " + lastName + " doesn't exist");
                 } else if(transacionStatus == 3) {
-                    responseJsonObject.addProperty("message", "incorrect card information");
+                    responseJsonObject.addProperty("message", "Incorrect card information");
                 }
                 response.getWriter().write(responseJsonObject.toString());  	
             }
