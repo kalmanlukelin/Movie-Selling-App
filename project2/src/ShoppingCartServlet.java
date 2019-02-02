@@ -9,6 +9,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Set;
+import java.util.Calendar;
+import java.util.Date;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * This IndexServlet is declared in the web annotation below, 
@@ -28,7 +34,7 @@ public class ShoppingCartServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String sessionId = session.getId();
         Long lastAccessTime = session.getLastAccessedTime();
-
+        
         JsonObject responseJsonObject = new JsonObject();
         responseJsonObject.addProperty("sessionID", sessionId);
         responseJsonObject.addProperty("lastAccessTime", new Date(lastAccessTime).toString());
@@ -47,10 +53,6 @@ public class ShoppingCartServlet extends HttpServlet {
         String qty = request.getParameter("qty");
         if(removeMovie != null && item == null && qty == null) status = 2;
         else if(removeMovie == null && item != null && qty != null) status = 1;
-        
-//    	boolean removeFunc = ((removeMovie == null) ? false : true); // remove movie or add movie
-    	System.out.println(removeMovie);
-    	System.out.println(status);
   
         HttpSession session = request.getSession();
         
@@ -71,7 +73,8 @@ public class ShoppingCartServlet extends HttpServlet {
                     } 	
             	}       	
             }        	
-
+            
+        
         // join by array
         ArrayList<String> arr = new ArrayList();
         Set<String> keys = m.keySet();
@@ -80,7 +83,7 @@ public class ShoppingCartServlet extends HttpServlet {
             arr.add(key);            
             arr.add(Integer.toString(m.get(key)));
         }
-    	
+        
         response.getWriter().write(String.join(",", arr));
         
     }

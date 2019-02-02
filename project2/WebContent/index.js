@@ -57,8 +57,6 @@ function handleStarResult(resultData) {
     let genre=getParameterByName('genre');
     //console.log(moviePage);
     
-
-    
     // Populate the star table
     let starTableBodyElement = jQuery("#movie_table_body");
     for (let i = 1; i <= Math.min(recordNum, resultData.length-1); i++) {

@@ -43,13 +43,12 @@ public class checkoutServlet extends HttpServlet {
         String email = request.getParameter("email");
         String ccid = request.getParameter("ccid");
         String expiration = request.getParameter("date");
+        /*
     	System.out.println(lastName);
     	System.out.println(firstName);
     	System.out.println(email);
     	System.out.println(ccid);
-    	System.out.println(expiration);
-    	
-    	
+    	System.out.println(expiration);*/
 
         
         HttpSession session = request.getSession();
