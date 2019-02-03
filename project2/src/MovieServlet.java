@@ -64,7 +64,7 @@ public class MovieServlet extends HttpServlet {
             // Query database to get top 20 movies list.
             // String query = "SELECT m.id, m.title, m.year, m.director, r.rating FROM `movies` m JOIN `ratings` r ON m.id = r.movieId ORDER BY r.rating DESC LIMIT " + numRecord + " OFFSET " + offset;                                                    
             String query="";
-            String qSize="10";
+            String qSize="0";
             
             if(genre.length() > 1) {
             	query="SELECT m.id, m.title, m.year, m.director, r.rating, g.name FROM `movies` m INNER JOIN `ratings` r ON m.id =r.movieId INNER JOIN `genres_in_movies` gim ON gim.movieId=r.movieId INNER JOIN `genres` g ON g.id=gim.genreId WHERE g.name= "+"'"+genre+"'"+" ORDER BY r.rating DESC LIMIT "+numRecord+" OFFSET "+offset;
