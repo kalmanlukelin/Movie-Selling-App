@@ -50,8 +50,8 @@ CREATE TABLE sales (
     FOREIGN KEY (customerId) REFERENCES customers(id) on DELETE CASCADE,
     movieId VARCHAR(10) DEFAULT '',
     FOREIGN KEY (movieId) REFERENCES movies(id) on DELETE CASCADE,
-    saleDate DATE NOT NULL,
-    quantity INT DEFAULT 0
+    saleDate DATE NOT NULL
+    -- quantity INT DEFAULT 0
 );
 
 CREATE TABLE ratings (
@@ -60,3 +60,5 @@ CREATE TABLE ratings (
     rating FLOAT(8) NOT NULL,
     numVotes INT NOT NULL
 );
+-- Add quantity table after inserting data.
+-- alter table sales add quantity int default 0 not null
