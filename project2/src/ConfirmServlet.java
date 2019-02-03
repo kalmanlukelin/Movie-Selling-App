@@ -77,7 +77,7 @@ public class ConfirmServlet extends HttpServlet {
 			//Insert record into movies.sales.
 	        HashMap<String, Integer> itemMap=(HashMap<String, Integer>) session.getAttribute("itemMap");
 	        for(String movie_title : itemMap.keySet()) {
-	        	Integer quant=itemMap.get(movie_title);
+	        	Integer quantity=itemMap.get(movie_title);
 	        	//SELECT * FROM movies WHERE movies.title='Chief Zabu';
 	        	query="SELECT * FROM movies WHERE movies.title='"+movie_title+"'";
 	        	rs=statement.executeQuery(query);
@@ -85,21 +85,14 @@ public class ConfirmServlet extends HttpServlet {
 	        	String movie_id=rs.getString("id");
 	        	
 	        	System.out.println("movie_id: "+movie_id);
-	        	System.out.println("quant: "+quant);
+	        	System.out.println("quantity: "+quantity);
 	        	
 	        	//INSERT INTO sales (customerId, movieId, saleDate) VALUES ('135006', 'tt0399582', '2019-02-01');
 		        //Insert sale record.
+	        	/*
 	        	for(int i=0; i<quant; i++) {
-	        		
 	        		query="INSERT INTO sales (customerId, movieId, saleDate) VALUES ('"+customerId+"','"+movie_id+"','"+saleDate+"')";
-			        /*
-	        		rs=statement.executeQuery(query);
-			        rs.next();*/
 	        		int r=statement.executeUpdate(query);
-	        		
-	        		/*
-	        		if(r > 0) System.out.println("Insert Success: ");
-	        		else System.out.println("Insert Failed");*/
 	        		
 			        query="SELECT * FROM sales WHERE sales.customerId='"+customerId+"' AND sales.movieId='"+movie_id+"' AND sales.saleDate='"+saleDate+"'";
 			        rs=statement.executeQuery(query);
@@ -113,8 +106,20 @@ public class ConfirmServlet extends HttpServlet {
 			        
 			        System.out.println("sale_id: "+String.valueOf(Integer.valueOf(sale_id)+i));
 			        System.out.println("movie_title: "+movie_title);
-	        	}
+	        	}*/
+	        	query="INSERT INTO sales (customerId, movieId, saleDate, quantity) VALUES ('"+customerId+"','"+movie_id+"','"+saleDate+"','"+quantity+"')";
+	        	int r=statement.executeUpdate(query);
 	        	
+	        	query="SELECT * FROM sales WHERE sales.customerId='"+customerId+"' AND sales.movieId='"+movie_id+"' AND sales.saleDate='"+saleDate+"'";
+	        	rs=statement.executeQuery(query);
+	        	rs.next();
+	        	String sale_id=rs.getString("id");
+	        	
+	        	JsonObject jsonObject = new JsonObject();
+	        	jsonObject.addProperty("sale_id", sale_id);
+	        	jsonObject.addProperty("movie_title", movie_title);
+	        	jsonObject.addProperty("quantity", quantity);
+	        	jsonArray.add(jsonObject);
 	        }
             // write JSON string to output
             out.write(jsonArray.toString());

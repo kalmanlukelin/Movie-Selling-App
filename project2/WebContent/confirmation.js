@@ -11,6 +11,7 @@ function handleStarResult(resultData) {
     	rowHTML += "<th>" + num + "</th>";
     	rowHTML += "<th>" + resultData[i]["sale_id"] + "</th>";
     	rowHTML += "<th>" + resultData[i]["movie_title"] + "</th>";
+    	rowHTML += "<th>" + resultData[i]["quantity"] + "</th>";
         // Append the row created to the table body, which will refresh the page
     	confirm.append(rowHTML);
     }
