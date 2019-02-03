@@ -36,13 +36,15 @@
       .single_movie_page ul{
         color:black;
       }
+      .list-group{
+        color:black;
+      }
     </style>
     
     <title>Single Movie Page</title>
 </head>
 
 <body>
-
 <!--
 <header>
   <nav>
@@ -74,13 +76,12 @@
   </nav>
 </header>
 -->
-
+ 
 <header>
   <nav>
     <div class="container-fluid">
     <div class="row justify-content-between">
     
-    <!-- Single movie page-->
     <div class="col-ms-4">
         <h1>Single Movie Page</h1>
         <button data-toggle="collapse" data-target="#demo">Movie Info</button>
@@ -89,7 +90,6 @@
         </div>
     </div>
   
-    <!-- search box-->
     <div class="col-ms-4">
       <form action="index.html" method="get">
         <input type="text" name="Title" size="35" placeholder="Click here to search a movie by title"/>
@@ -112,6 +112,7 @@
     </div>
   </nav>
 </header>
+
 
 <table id=movie_table class="table table-striped">
   <thead>
